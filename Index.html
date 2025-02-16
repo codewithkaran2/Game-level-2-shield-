@@ -54,6 +54,13 @@
             border-radius: 5px;
             margin-top: 10px;
         }
+        .health-text {
+            position: absolute;
+            top: 0;
+            font-weight: bold;
+        }
+        .p1-health-text { left: 50px; color: blue; }
+        .p2-health-text { right: 50px; color: red; }
     </style>
 </head>
 <body>
@@ -63,12 +70,13 @@
 
     <div class="health-bar-container p1-health-container">
         <div class="health-bar" id="p1HealthBar"></div>
+        <span class="health-text p1-health-text" id="p1HealthText">100%</span>
     </div>
     <div class="health-bar-container p2-health-container">
         <div class="health-bar" id="p2HealthBar"></div>
+        <span class="health-text p2-health-text" id="p2HealthText">100%</span>
     </div>
 
-    <!-- Player labels below health bars -->
     <div class="player-label p1-label">🟦 Player 1</div>
     <div class="player-label p2-label">🟥 Player 2</div>
 
