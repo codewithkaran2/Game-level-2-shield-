@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chaos Keyboard Battle</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #111;
+            color: white;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+        canvas {
+            background: #222;
+            display: block;
+            margin: auto;
+            border: 2px solid white;
+        }
+        .keys {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        .health-container {
+            position: absolute;
+            width: 200px;
+            height: 20px;
+            background-color: gray;
+        }
+        .health-bar {
+            height: 100%;
+            background-color: red;
+            transition: width 0.2s;
+        }
+        .p1-health-container { left: 50px; top: 20px; }
+        .p2-health-container { right: 50px; top: 20px; }
+        .health-text {
+            position: absolute;
+            width: 200px;
+            top: 0;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+        }
+        .level-box {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: blue;
+            color: white;
+            padding: 5px 20px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Chaos Keyboard Battle Game</h1>
+    <div class="keys">
+        <h2>Player 1: <span id="p1Keys"></span></h2>
+        <h2>Player 2: <span id="p2Keys"></span></h2>
+    </div>
+    <div class="health-container p1-health-container">
+        <div class="health-bar" id="p1HealthBar"></div>
+        <div class="health-text" id="p1HealthText">100%</div>
+    </div>
+    <div class="health-container p2-health-container">
+        <div class="health-bar" id="p2HealthBar"></div>
+        <div class="health-text" id="p2HealthText">100%</div>
+    </div>
+    <div class="level-box">Level 1</div>
+    <canvas id="gameCanvas"></canvas>
+    <h2 id="winner"></h2>
+    <button onclick="restartGame()">Restart Game</button>
+    <script src="game.js"></script>
+</body>
+</html>
