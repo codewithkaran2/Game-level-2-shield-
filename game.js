@@ -29,7 +29,7 @@ function getRandomUniqueKeys(existingKeys) {
     return assignedKeys;
 }
 
-// Ensure unique keys for both players
+// Unique keys for both players
 const player1Keys = getRandomUniqueKeys([]);
 const player2Keys = getRandomUniqueKeys(Object.values(player1Keys));
 
@@ -39,7 +39,7 @@ window.onload = function () {
 };
 
 class Player {
-    constructor(x, color, facing) {
+    constructor(x, color) {
         this.x = x;
         this.y = 300;
         this.width = 40;
@@ -49,14 +49,12 @@ class Player {
         this.health = 100;
         this.velY = 0;
         this.isJumping = false;
-        this.facing = facing;
         this.isDead = false;
-        this.lastShot = 0;
         this.shieldActive = false;
     }
 
-    moveLeft() { if (!this.isDead) this.x = Math.max(0, this.x - this.speed); this.facing = -1; }
-    moveRight() { if (!this.isDead) this.x = Math.min(canvas.width - this.width, this.x + this.speed); this.facing = 1; }
+    moveLeft() { if (!this.isDead) this.x = Math.max(0, this.x - this.speed); }
+    moveRight() { if (!this.isDead) this.x = Math.min(canvas.width - this.width, this.x + this.speed); }
     
     jump() {
         if (!this.isJumping && !this.isDead) {
@@ -82,13 +80,13 @@ class Player {
         }
     }
 
-    takeDamage(fromPlayer) {
+    takeDamage() {
         if (!this.isDead && !this.shieldActive) {
             this.health -= 20;
             if (this.health <= 0) {
                 this.health = 0;
                 this.isDead = true;
-                endGame(`${fromPlayer.color.toUpperCase()} Player WINS!`);
+                endGame(`${this.color.toUpperCase()} Player WINS!`);
             }
         }
     }
@@ -105,13 +103,8 @@ class Bullet {
         this.shooter = shooter;
     }
 
-    move() {
-        this.x += this.speed;
-    }
-
-    isOffScreen() {
-        return this.x < 0 || this.x > canvas.width;
-    }
+    move() { this.x += this.speed; }
+    isOffScreen() { return this.x < 0 || this.x > canvas.width; }
 
     hasHit(target) {
         return (
@@ -124,31 +117,30 @@ class Bullet {
     }
 }
 
-const player1 = new Player(100, "blue", 1);
-const player2 = new Player(600, "red", -1);
+const player1 = new Player(100, "blue");
+const player2 = new Player(600, "red");
 const bullets = [];
-
 const keysPressed = {};
 
-window.addEventListener("keydown", (e) => { keysPressed[e.key.toUpperCase()] = true; });
+window.addEventListener("keydown", (e) => {
+    keysPressed[e.key.toUpperCase()] = true;
+
+    if (e.key.toUpperCase() === player1Keys.shoot) bullets.push(new Bullet(player1.x + player1.width, player1.y, 1, "blue", player1));
+    if (e.key.toUpperCase() === player2Keys.shoot) bullets.push(new Bullet(player2.x, player2.y, -1, "red", player2));
+});
+
 window.addEventListener("keyup", (e) => { keysPressed[e.key.toUpperCase()] = false; });
 
 function updateGame() {
     if (player1.isDead || player2.isDead) return;
 
-    if (keysPressed[player1Keys.left]) player1.moveLeft();
-    if (keysPressed[player1Keys.right]) player1.moveRight();
-    if (keysPressed[player1Keys.jump]) player1.jump();
-    if (keysPressed[player2Keys.left]) player2.moveLeft();
-    if (keysPressed[player2Keys.right]) player2.moveRight();
-    if (keysPressed[player2Keys.jump]) player2.jump();
-    if (keysPressed[player1Keys.shield]) player1.activateShield();
-    if (keysPressed[player2Keys.shield]) player2.activateShield();
+    bullets.forEach((bullet, index) => {
+        bullet.move();
+        if (bullet.hasHit(player1)) player1.takeDamage();
+        if (bullet.hasHit(player2)) player2.takeDamage();
+        if (bullet.isOffScreen()) bullets.splice(index, 1);
+    });
 
-    document.getElementById("p1HealthText").textContent = `${player1.health}%`;
-    document.getElementById("p2HealthText").textContent = `${player2.health}%`;
-
-    drawGame();
     requestAnimationFrame(updateGame);
 }
 
